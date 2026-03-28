@@ -8,6 +8,8 @@ import DashboardPage from './pages/DashboardPage';
 import CategoriesPage from './pages/CategoriesPage';
 import ProductsPage from './pages/ProductsPage';
 import ProductFormPage from './pages/ProductFormPage';
+import OrdersPage from './pages/OrdersPage';
+import OrderDetailsPage from './pages/OrderDetailsPage';
 import { fetchAdminProfile } from './features/auth/authSlice';
 import AdminLayout from './components/layout/AdminLayout';
 
@@ -46,6 +48,8 @@ function App() {
                 <Route path="/products/add" element={<ProductFormPage />} />
                 <Route path="/products/edit/:id" element={<ProductFormPage />} />
                 <Route path="/products/view/:id" element={<ProductFormPage isViewOnly={true} />} />
+                <Route path="/orders" element={<OrdersPage />} />
+                <Route path="/orders/view/:id" element={<OrderDetailsPage />} />
                 <Route path="*" element={<Navigate to="/" />} />
               </Routes>
             </AdminLayout>
