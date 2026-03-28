@@ -16,7 +16,7 @@ const DashboardPage = () => {
         <h1 className="text-2xl font-bold text-gray-900">Welcome Back, {user?.displayName}!</h1>
         <p className="text-gray-500">Here's what's happening today.</p>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {stats.map((stat) => (
           <div key={stat.label} className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
@@ -26,12 +26,11 @@ const DashboardPage = () => {
               <p className="text-xs font-semibold text-green-600 mt-1">{stat.trend} <span className="text-gray-400 font-normal">from last month</span></p>
             </div>
             <div className={`${stat.color} h-12 w-12 rounded-lg opacity-10 flex items-center justify-center`}>
-              {/* Icon placeholder */}
             </div>
           </div>
         ))}
       </div>
-      
+
       <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-lg font-bold text-gray-900">Order Growth</h2>
@@ -41,7 +40,7 @@ const DashboardPage = () => {
           </select>
         </div>
         <div className="h-80 flex items-center justify-center border-2 border-dashed border-gray-100 rounded-lg bg-gray-50">
-          <p className="text-gray-400 italic font-medium">Order Growth Line Graph (Recharts) will be integrated here</p>
+          <p className="text-gray-400 italic font-medium">Graph placeholder</p>
         </div>
       </div>
     </div>

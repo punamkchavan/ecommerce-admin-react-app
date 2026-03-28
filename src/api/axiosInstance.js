@@ -31,7 +31,10 @@ axiosInstance.interceptors.response.use(
       window.location.href = '/login';
     }
     
-    return Promise.reject(message);
+    // Create a new error object that includes the message and the response
+    const customError = new Error(message);
+    customError.response = error.response;
+    return Promise.reject(customError);
   }
 );
 

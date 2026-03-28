@@ -5,6 +5,7 @@ import LoginPage from './pages/LoginPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ProfilePage from './pages/ProfilePage';
 import DashboardPage from './pages/DashboardPage';
+import CategoriesPage from './pages/CategoriesPage';
 import { fetchAdminProfile } from './features/auth/authSlice';
 import AdminLayout from './components/layout/AdminLayout';
 
@@ -38,6 +39,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<DashboardPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/categories" element={<CategoriesPage />} />
                 {/* Add other admin routes here */}
                 <Route path="*" element={<Navigate to="/" />} />
               </Routes>
