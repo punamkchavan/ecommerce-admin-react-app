@@ -10,6 +10,8 @@ import ProductsPage from './pages/ProductsPage';
 import ProductFormPage from './pages/ProductFormPage';
 import OrdersPage from './pages/OrdersPage';
 import OrderDetailsPage from './pages/OrderDetailsPage';
+import CustomersPage from './pages/CustomersPage';
+import CustomerDetailsPage from './pages/CustomerDetailsPage';
 import { fetchAdminProfile } from './features/auth/authSlice';
 import AdminLayout from './components/layout/AdminLayout';
 
@@ -50,6 +52,8 @@ function App() {
                 <Route path="/products/view/:id" element={<ProductFormPage isViewOnly={true} />} />
                 <Route path="/orders" element={<OrdersPage />} />
                 <Route path="/orders/view/:id" element={<OrderDetailsPage />} />
+                <Route path="/customers" element={<CustomersPage />} />
+                <Route path="/customers/view/:id" element={<CustomerDetailsPage />} />
                 <Route path="*" element={<Navigate to="/" />} />
               </Routes>
             </AdminLayout>
