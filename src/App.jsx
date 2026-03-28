@@ -6,6 +6,8 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ProfilePage from './pages/ProfilePage';
 import DashboardPage from './pages/DashboardPage';
 import CategoriesPage from './pages/CategoriesPage';
+import ProductsPage from './pages/ProductsPage';
+import ProductFormPage from './pages/ProductFormPage';
 import { fetchAdminProfile } from './features/auth/authSlice';
 import AdminLayout from './components/layout/AdminLayout';
 
@@ -40,7 +42,10 @@ function App() {
                 <Route path="/" element={<DashboardPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/categories" element={<CategoriesPage />} />
-                {/* Add other admin routes here */}
+                <Route path="/products" element={<ProductsPage />} />
+                <Route path="/products/add" element={<ProductFormPage />} />
+                <Route path="/products/edit/:id" element={<ProductFormPage />} />
+                <Route path="/products/view/:id" element={<ProductFormPage isViewOnly={true} />} />
                 <Route path="*" element={<Navigate to="/" />} />
               </Routes>
             </AdminLayout>

@@ -3,9 +3,6 @@ import axiosInstance from './axiosInstance';
 const PROJECT_ID = import.meta.env.VITE_FIREBASE_PROJECT_ID;
 const BASE_URL = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents/categories`;
 
-/**
- * Transform Firestore document to simplified object
- */
 const transformDoc = (doc) => {
   const fields = doc.fields;
   const id = doc.name.split('/').pop();
