@@ -135,9 +135,6 @@ const CustomersPage = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <div className="text-sm text-gray-500">
-            {filteredCustomers.length} total customers
-          </div>
         </div>
 
         <DataTable

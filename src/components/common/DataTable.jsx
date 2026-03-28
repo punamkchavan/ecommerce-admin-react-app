@@ -62,10 +62,7 @@ const DataTable = ({
       </div>
 
       {pagination && (
-        <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/50">
-          <div className="text-sm text-gray-500">
-            Page <span className="font-medium text-gray-900">{pagination.currentPage}</span>
-          </div>
+        <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-end bg-gray-50/50">
           <div className="flex gap-2">
             <button
               onClick={pagination.onPrev}

@@ -146,9 +146,6 @@ const CategoriesPage = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <div className="text-sm text-gray-500">
-            Displaying {filteredCategories.length} categories
-          </div>
         </div>
 
         <DataTable
