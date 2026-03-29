@@ -39,6 +39,7 @@ const OrdersPage = () => {
       shipped: { color: 'bg-purple-100 text-purple-700 border-purple-200', icon: <Truck className="h-3 w-3" /> },
       delivered: { color: 'bg-green-100 text-green-700 border-green-200', icon: <CheckCircle className="h-3 w-3" /> },
       cancelled: { color: 'bg-red-100 text-red-700 border-red-200', icon: <XCircle className="h-3 w-3" /> },
+      rejected: { color: 'bg-red-100 text-red-700 border-red-200', icon: <XCircle className="h-3 w-3" /> },
     };
 
     const config = configs[status.toLowerCase()] || configs.pending;
@@ -157,7 +158,7 @@ const OrdersPage = () => {
           <div className="flex items-center gap-2">
             <span className="text-gray-500 font-medium whitespace-nowrap">Status:</span>
             <div className="flex bg-gray-50 p-1 rounded-lg border border-gray-100 overflow-x-auto">
-              {['all', 'pending', 'processing', 'shipped', 'delivered', 'cancelled'].map((status) => (
+              {['all', 'pending', 'processing', 'shipped', 'delivered', 'cancelled', 'rejected'].map((status) => (
                 <button
                   key={status}
                   onClick={() => setStatusFilter(status)}

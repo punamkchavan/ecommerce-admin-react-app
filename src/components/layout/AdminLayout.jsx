@@ -70,14 +70,14 @@ const AdminLayout = ({ children }) => {
 
       <aside className={`
         fixed md:relative z-50 w-72 md:w-64 h-full bg-white border-r border-gray-200 flex flex-col text-sm
-        transition-transform duration-300 ease-in-out
+        transition-transform duration-300 ease-in-out print:hidden
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
       `}>
         <SidebarContent />
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 md:px-8 shrink-0 z-30">
+        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 md:px-8 shrink-0 z-30 print:hidden">
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setIsMobileMenuOpen(true)}

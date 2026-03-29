@@ -35,22 +35,22 @@ const CustomersPage = () => {
     {
       key: 'name',
       label: 'Customer',
-      render: (row) => (
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-full bg-primary-50 flex items-center justify-center text-primary-600 font-bold">
-            {row.name.charAt(0)}
+      render: (row) => {
+        const displayName = row.name && row.name.trim() !== '' ? row.name.trim() : (row.email ? row.email.split('@')[0] : 'Unknown');
+        return (
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-full bg-primary-50 flex items-center justify-center text-primary-600 font-bold uppercase">
+              {displayName.charAt(0)}
+            </div>
+            <div className="font-medium text-gray-900 capitalize">{displayName}</div>
           </div>
-          <div>
-            <div className="font-medium text-gray-900">{row.name}</div>
-            <div className="text-xs text-gray-400 font-normal">{row.email}</div>
-          </div>
-        </div>
-      )
+        );
+      }
     },
     {
-      key: 'phone',
-      label: 'Phone',
-      render: (row) => row.phone || '-'
+      key: 'email',
+      label: 'Email',
+      render: (row) => row.email || '-'
     },
     {
       key: 'totalOrders',
@@ -82,17 +82,6 @@ const CustomersPage = () => {
       }
     },
     {
-      key: 'status',
-      label: 'Status',
-      render: (row) => (
-        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-          row.status === 'active' ? 'bg-green-50 text-green-700 border-green-100' : 'bg-red-50 text-red-700 border-red-100'
-        }`}>
-          {row.status.charAt(0).toUpperCase() + row.status.slice(1)}
-        </span>
-      )
-    },
-    {
       key: 'actions',
       label: 'Actions',
       className: 'text-right',
@@ -110,8 +99,8 @@ const CustomersPage = () => {
   ];
 
   const filteredCustomers = customers.filter(customer => 
-    customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    customer.email.toLowerCase().includes(searchTerm.toLowerCase())
+    (customer.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (customer.email || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (

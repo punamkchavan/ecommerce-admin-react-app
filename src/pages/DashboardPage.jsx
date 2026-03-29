@@ -24,7 +24,11 @@ const DashboardPage = () => {
   }, [dispatch]);
 
   const stats = useMemo(() => {
-    const totalSales = orders.reduce((sum, order) => sum + order.totalAmount, 0);
+    const validOrders = orders.filter(o => 
+      !['rejected', 'cancelled'].includes(o.status?.toLowerCase() || '') && 
+      !['failed', 'pending', 'refunded'].includes(o.paymentStatus?.toLowerCase() || '')
+    );
+    const totalSales = validOrders.reduce((sum, order) => sum + order.totalAmount, 0);
     
     return [
       { label: 'Total Revenue', value: `₹${totalSales.toLocaleString()}`, icon: IndianRupee, color: 'text-emerald-600', bg: 'bg-emerald-50' },
@@ -43,7 +47,11 @@ const DashboardPage = () => {
 
     return last7Days.map(date => {
       const dailyOrders = orders.filter(o => o.createdAt?.startsWith(date));
-      const amount = dailyOrders.reduce((sum, o) => sum + o.totalAmount, 0);
+      const validDailyOrders = dailyOrders.filter(o => 
+        !['rejected', 'cancelled'].includes(o.status?.toLowerCase() || '') && 
+        !['failed', 'pending', 'refunded'].includes(o.paymentStatus?.toLowerCase() || '')
+      );
+      const amount = validDailyOrders.reduce((sum, o) => sum + o.totalAmount, 0);
       return {
         name: new Date(date).toLocaleDateString('en-IN', { weekday: 'short' }),
         sales: amount
@@ -141,8 +149,8 @@ const DashboardPage = () => {
                     <p className="text-xs text-gray-500">{customer.email}</p>
                   </div>
                 </div>
-                <div className="px-3 py-1 rounded-lg bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase">
-                  ACTIVE
+                <div className="text-xs text-gray-500 font-medium whitespace-nowrap">
+                  {customer.createdAt ? new Date(customer.createdAt).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }) : '-'}
                 </div>
               </div>
             ))}

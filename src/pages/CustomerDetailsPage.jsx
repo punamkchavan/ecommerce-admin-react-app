@@ -78,9 +78,6 @@ const CustomerDetailsPage = () => {
 
       <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
         <div className="flex flex-col md:flex-row gap-8 items-start">
-          <div className="h-24 w-24 rounded-full bg-primary-50 flex items-center justify-center text-primary-600 font-bold text-3xl border-4 border-white shadow-xl">
-            {customer.name.charAt(0)}
-          </div>
           <div className="flex-1 space-y-4">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">{customer.name}</h1>
@@ -100,13 +97,7 @@ const CustomerDetailsPage = () => {
               </div>
               <div className="space-y-1">
                 <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Member Since</p>
-                <p className="text-xl font-bold text-gray-900">{new Date(customer.createdAt).toLocaleDateString()}</p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Status</p>
-                <span className={`inline-flex px-2 py-0.5 rounded-md text-xs font-bold ${customer.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                  {customer.status.toUpperCase()}
-                </span>
+                <p className="text-xl font-bold text-gray-900">{customer.createdAt ? new Date(customer.createdAt).toLocaleDateString('en-IN') : '-'}</p>
               </div>
             </div>
           </div>
@@ -145,15 +136,6 @@ const CustomerDetailsPage = () => {
                 <div>
                   <p className="text-xs text-gray-400">Email Address</p>
                   <p className="text-sm font-medium text-gray-900">{customer.email}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-gray-50 rounded-lg">
-                  <Phone className="h-4 w-4 text-gray-400" />
-                </div>
-                <div>
-                  <p className="text-xs text-gray-400">Phone Number</p>
-                  <p className="text-sm font-medium text-gray-900">{customer.phone || 'Not provided'}</p>
                 </div>
               </div>
             </div>

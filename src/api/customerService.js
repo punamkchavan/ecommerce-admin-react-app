@@ -15,7 +15,7 @@ const transformDoc = (doc) => {
     totalOrders: Number(fields?.totalOrders?.integerValue || 0),
     totalSpent: Number(fields?.totalSpent?.doubleValue || fields?.totalSpent?.integerValue || 0),
     status: fields?.status?.stringValue || 'active',
-    createdAt: fields?.createdAt?.timestampValue || ''
+    createdAt: fields?.createdAt?.stringValue || fields?.createdAt?.timestampValue || ''
   };
 };
 

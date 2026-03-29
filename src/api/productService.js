@@ -97,3 +97,33 @@ export const deleteProduct = async (id) => {
   await axiosInstance.delete(`${BASE_URL}/${id}`);
   return id;
 };
+
+const updateProductStock = async (productId, incrementAmount) => {
+  if (!productId || incrementAmount === 0) return;
+  
+  const commitUrl = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents:commit`;
+  
+  const payload = {
+    writes: [
+      {
+        transform: {
+          document: `projects/${PROJECT_ID}/databases/(default)/documents/products/${productId}`,
+          fieldTransforms: [
+            {
+              fieldPath: 'stock',
+              increment: { integerValue: Number(incrementAmount) }
+            }
+          ]
+        }
+      }
+    ]
+  };
+  
+  try {
+    await axiosInstance.post(commitUrl, payload);
+  } catch (error) {
+    console.error('Failed to update product stock:', error);
+  }
+};
+
+export { updateProductStock };

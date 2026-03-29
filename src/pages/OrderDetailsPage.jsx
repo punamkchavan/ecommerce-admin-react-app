@@ -2,8 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchOrderById, updateStatus } from '../features/orders/orderSlice';
+import { updatePaymentStatus } from '../api/orderService';
+import { updateProductStock } from '../api/productService'; // Added for inventory sync
 import { ArrowLeft, Clock, ShoppingBag, Truck, CheckCircle, XCircle, User, MapPin, CreditCard, Package, Download } from 'lucide-react';
 import Button from '../components/common/Button';
+import Loader from '../components/common/Loader';
+import generateInvoice from '../utils/generateInvoice';
 
 const OrderDetailsPage = () => {
   const { id } = useParams();
@@ -17,8 +21,21 @@ const OrderDetailsPage = () => {
   }, [dispatch, id]);
 
   const handleStatusUpdate = async (newStatus) => {
+    if (!window.confirm(`Are you sure you want to change status to ${newStatus}?`)) return;
     setUpdating(true);
     await dispatch(updateStatus({ id, status: newStatus }));
+    
+    if (newStatus === 'rejected') {
+      for (const item of order.items) {
+        await updateProductStock(item.id, item.quantity);
+      }
+      
+      if (order.paymentMethod?.toUpperCase() === 'ONLINE') {
+        await updatePaymentStatus(id, 'refunded');
+        dispatch(fetchOrderById(id));
+      }
+    }
+    
     setUpdating(false);
   };
 
@@ -28,9 +45,10 @@ const OrderDetailsPage = () => {
     shipped: { color: 'text-purple-600 bg-purple-50 border-purple-100', icon: <Truck className="h-5 w-5" /> },
     delivered: { color: 'text-green-600 bg-green-50 border-green-100', icon: <CheckCircle className="h-5 w-5" /> },
     cancelled: { color: 'text-red-600 bg-red-50 border-red-100', icon: <XCircle className="h-5 w-5" /> },
+    rejected: { color: 'text-red-600 bg-red-50 border-red-100', icon: <XCircle className="h-5 w-5" /> },
   };
 
-  if (isLoading && !order) return <div className="p-8 text-center text-gray-500">Loading order details...</div>;
+  if (isLoading && !order) return <Loader size="lg" className="p-8" />;
   if (!order) return <div className="p-8 text-center text-red-500 font-medium">Order not found</div>;
 
   const currentStatusConfig = statusConfigs[order.status.toLowerCase()] || statusConfigs.pending;
@@ -39,7 +57,7 @@ const OrderDetailsPage = () => {
     <div className="p-8 max-w-6xl mx-auto space-y-6 text-sm">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <button onClick={() => navigate('/orders')} className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-500">
+          <button onClick={() => navigate('/orders')} className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-500 print:hidden">
             <ArrowLeft className="h-5 w-5" />
           </button>
           <div>
@@ -55,16 +73,18 @@ const OrderDetailsPage = () => {
         
         <div className="flex gap-2">
           <select
-            className="h-10 px-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all disabled:opacity-50"
+            className="h-10 px-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all disabled:opacity-50 print:hidden"
             value={order.status}
             onChange={(e) => handleStatusUpdate(e.target.value)}
-            disabled={updating || order.status === 'delivered' || order.status === 'cancelled'}
+            disabled={updating || ['delivered', 'cancelled', 'rejected'].includes(order.status)}
           >
-            {['pending', 'processing', 'shipped', 'delivered', 'cancelled'].map(s => (
-              <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
-            ))}
+            <option value={order.status}>{order.status.charAt(0).toUpperCase() + order.status.slice(1)}</option>
+            {order.status === 'pending' && <option value="processing">Processing</option>}
+            {order.status === 'pending' && <option value="rejected">Rejected</option>}
+            {order.status === 'processing' && <option value="shipped">Shipped</option>}
+            {order.status === 'shipped' && <option value="delivered">Delivered</option>}
           </select>
-          <Button variant="ghost" className="flex items-center gap-2">
+          <Button variant="ghost" className="flex items-center gap-2 print:hidden" onClick={() => generateInvoice(order)}>
             <Download className="h-4 w-4" />
             Invoice
           </Button>
@@ -139,14 +159,27 @@ const OrderDetailsPage = () => {
               <MapPin className="h-4 w-4 text-gray-400" />
               Shipping Address
             </h3>
-            <div className="space-y-3 text-gray-600 leading-relaxed">
-              <p className="font-bold text-gray-900">{order.shippingAddress.fullName}</p>
-              <p>{order.shippingAddress.addressLine1}</p>
-              <p>{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.postalCode}</p>
-              <p>{order.shippingAddress.country}</p>
-              <p className="pt-2 flex items-center gap-2 text-gray-900 font-medium font-mono text-xs">
-                {order.shippingAddress.phone}
-              </p>
+            <div className="space-y-3 text-sm leading-relaxed">
+              <div className="flex justify-between items-start border-b border-gray-50 pb-2">
+                <span className="text-gray-500">Name</span>
+                <span className="font-bold text-gray-900 text-right">{order.shippingAddress.name}</span>
+              </div>
+              <div className="flex justify-between items-start border-b border-gray-50 pb-2">
+                <span className="text-gray-500">Street</span>
+                <span className="font-medium text-gray-900 text-right max-w-[60%]">{order.shippingAddress.street}</span>
+              </div>
+              <div className="flex justify-between items-start border-b border-gray-50 pb-2">
+                <span className="text-gray-500">City & State</span>
+                <span className="font-medium text-gray-900 text-right">{order.shippingAddress.city}, {order.shippingAddress.state}</span>
+              </div>
+              <div className="flex justify-between items-start border-b border-gray-50 pb-2">
+                <span className="text-gray-500">Pincode</span>
+                <span className="font-medium text-gray-900">{order.shippingAddress.zip}</span>
+              </div>
+              <div className="flex justify-between items-center pt-1 text-xs">
+                <span className="text-gray-500 font-medium uppercase tracking-wider">Phone</span>
+                <span className="font-mono font-bold text-gray-900 bg-gray-50 px-2 py-1 rounded-md">{order.shippingAddress.phone}</span>
+              </div>
             </div>
           </div>
 
@@ -157,7 +190,7 @@ const OrderDetailsPage = () => {
             </h3>
             <div className="flex items-center justify-between">
               <span className="text-gray-500">Method:</span>
-              <span className="font-bold text-gray-900">Online Payment</span>
+              <span className="font-bold text-gray-900">{order.paymentMethod?.toUpperCase() === 'ONLINE' ? 'Online Payment' : 'Cash on Delivery'}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-gray-500">Status:</span>
@@ -165,6 +198,12 @@ const OrderDetailsPage = () => {
                 {order.paymentStatus.toUpperCase()}
               </span>
             </div>
+            {order.paymentMethod?.toUpperCase() === 'ONLINE' && order.paymentId && (
+              <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-50">
+                <span className="text-gray-500">TXN ID:</span>
+                <span className="font-bold text-gray-900 font-mono text-xs truncate max-w-[120px]" title={order.paymentId}>{order.paymentId}</span>
+              </div>
+            )}
           </div>
         </div>
       </div>

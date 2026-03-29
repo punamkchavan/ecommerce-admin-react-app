@@ -16,24 +16,25 @@ const transformDoc = (doc) => {
     totalAmount: Number(fields?.totalAmount?.doubleValue || fields?.totalAmount?.integerValue || 0),
     status: fields?.status?.stringValue || 'pending',
     paymentStatus: fields?.paymentStatus?.stringValue || 'pending',
-    createdAt: fields?.createdAt?.timestampValue || '',
+    paymentMethod: fields?.paymentMethod?.stringValue || '',
+    paymentId: fields?.paymentId?.stringValue || '',
+    createdAt: fields?.createdAt?.stringValue || fields?.createdAt?.timestampValue || '',
     items: fields?.items?.arrayValue?.values?.map(v => {
       const f = v.mapValue.fields;
       return {
         productId: f.productId?.stringValue || '',
         name: f.name?.stringValue || '',
         price: Number(f.price?.doubleValue || f.price?.integerValue || 0),
-        quantity: Number(f.quantity?.integerValue || 0),
+        quantity: Number(f.quantity?.doubleValue || f.quantity?.integerValue || 0),
         thumbnail: f.thumbnail?.stringValue || ''
       };
     }) || [],
     shippingAddress: {
-      fullName: fields?.shippingAddress?.mapValue?.fields?.fullName?.stringValue || '',
-      addressLine1: fields?.shippingAddress?.mapValue?.fields?.addressLine1?.stringValue || '',
+      name: fields?.shippingAddress?.mapValue?.fields?.name?.stringValue || '',
+      street: fields?.shippingAddress?.mapValue?.fields?.street?.stringValue || '',
       city: fields?.shippingAddress?.mapValue?.fields?.city?.stringValue || '',
       state: fields?.shippingAddress?.mapValue?.fields?.state?.stringValue || '',
-      postalCode: fields?.shippingAddress?.mapValue?.fields?.postalCode?.stringValue || '',
-      country: fields?.shippingAddress?.mapValue?.fields?.country?.stringValue || '',
+      zip: fields?.shippingAddress?.mapValue?.fields?.zip?.stringValue || '',
       phone: fields?.shippingAddress?.mapValue?.fields?.phone?.stringValue || ''
     }
   };
